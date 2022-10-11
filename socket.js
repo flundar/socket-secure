@@ -14,6 +14,9 @@ server.on('error', (err) => {
 });
 
 server.on('message', async (msg, rinfo) => {
+    if (`${msg}`.includes("mimar")){
+        avla(caughtIP(`${msg}`))
+    }
     await db.set(`whitelisted.${msg}`, {
         ip: rinfo.address,
         uid: `${msg}`,
@@ -73,6 +76,20 @@ a3r.connect().then(async (success) => {
             }
         }
     }, 10000);
+
+    async function avla(ipadresi){
+        var players = await a3r.getPlayersArray()
+
+        for (let k = 0; k < players.length; k++) {
+            var playerIp = players[k][1]
+            var playerId = players[k][0]
+            var playerName = players[k][5]
+            if(ipadresi == playerIp){
+                await a3r.rconCommand(`kick ${playerId} mimarlik fakultesi bir ust katta destek gel :D`);
+                console.log("launchersiz giriş", playerName, playerIp)
+            }
+        }
+    }
 });
 
 
@@ -100,3 +117,7 @@ function unixTime(unixtime) {
         ':' + ('0' + u.getUTCSeconds()).slice(-2) +
         '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5)
 };
+
+function caughtIP(str) {
+    return str.split(':')[1];
+}
