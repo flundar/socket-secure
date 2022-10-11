@@ -13,7 +13,18 @@ server.on('error', (err) => {
     server.close();
 });
 
+<<<<<<< HEAD
 
+=======
+server.on('message', async (msg, rinfo) => {
+    await db.set(`whitelisted.${msg}`, {
+        ip: rinfo.address,
+        uid: `${msg}`,
+        timestamp: new Date().getTime()
+    })
+    console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+});
+>>>>>>> parent of 66868e7 (update)
 
 server.on('listening', () => {
     const address = server.address();
@@ -90,6 +101,7 @@ a3r.connect().then(async (success) => {
             }
         }
     }, 10000);
+<<<<<<< HEAD
 
     async function avla(ipadresi) {
         var players = await a3r.getPlayersArray()
@@ -104,6 +116,8 @@ a3r.connect().then(async (success) => {
             }
         }
     }
+=======
+>>>>>>> parent of 66868e7 (update)
 });
 
 
@@ -130,6 +144,7 @@ function unixTime(unixtime) {
         ':' + ('0' + u.getUTCMinutes()).slice(-2) +
         ':' + ('0' + u.getUTCSeconds()).slice(-2) +
         '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5)
+<<<<<<< HEAD
 };
 
 function caughtIP(str) {
@@ -139,3 +154,6 @@ function caughtIP(str) {
 function caughtRealIP(str) {
     return str.split(':')[0];
 }
+=======
+};
+>>>>>>> parent of 66868e7 (update)
