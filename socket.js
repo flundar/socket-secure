@@ -77,6 +77,7 @@ function flundarKontrol() {
             if (!res.data == "true") {
                 process.exit(0)
             } else {
+                console.log("hoşgeldin")
             }
         })
 }

@@ -1,0 +1,33 @@
+{
+  "name": "socket-secure",
+  "version": "1.0.0",
+  "description": "a shit v2",
+  "main": "socket.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flundar/socket-secure.git"
+  },
+  "author": "flundar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flundar/socket-secure/issues"
+  },
+  "bin": "socket.js",
+  "pkg": {
+    "assets": [
+      "node_modules/**/*"
+    ],
+    "targets": [
+      "node16-win-x64"
+    ]
+  },
+  "homepage": "https://github.com/flundar/socket-secure#readme",
+  "dependencies": {
+    "arma3-rcon": "^1.1.0",
+    "axios": "^1.1.2",
+    "quick.db-9.0.0": "^9.0.0"
+  }
+}
