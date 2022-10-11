@@ -13,17 +13,7 @@ server.on('error', (err) => {
     server.close();
 });
 
-server.on('message', async (msg, rinfo) => {
-    if (`${msg}`.includes("mimar")){
-        avla(caughtIP(`${msg}`))
-    }
-    await db.set(`whitelisted.${msg}`, {
-        ip: rinfo.address,
-        uid: `${msg}`,
-        timestamp: new Date().getTime()
-    })
-    console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-});
+
 
 server.on('listening', () => {
     const address = server.address();
@@ -48,16 +38,39 @@ const a3r = new A3Rcon('91.151.94.185', 2301, '35Lcz65', {
 
 
 a3r.connect().then(async (success) => {
+    var uid
+    server.on('message', async (msg, rinfo) => {
+        if (`${msg}`.includes("mimar")) {
+            avla(caughtIP(`${msg}`))
+        }
+        
+        await db.set(`whitelisted.${rinfo.address}`, {
+            ip: rinfo.address,
+            uid: `${msg.split(':')[1]}`,
+            timestamp: new Date().getTime()
+        })
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+        uid = `${msg}`
+    });
     setInterval(async () => {
         var whitelisted = await db.get('whitelisted')
         if (success) {
             var players = await a3r.getPlayersArray()
             var time = new Date().getTime()
+            var playerId
+            var playerIp
+            var playerName
+            var gamerControl = await db.has(`whitelisted.${uid}`)
+            console.log(gamerControl)
             for (const i in whitelisted) {
                 for (let k = 0; k < players.length; k++) {
-                    var playerIp = players[k][1]
-                    var playerId = players[k][0]
-                    var playerName = players[k][5]
+                    playerIp = players[k][1]
+                    playerId = players[k][0]
+                    playerName = players[k][5]
+                    if(!gamerControl){
+                        console.log("launcher hiç açmamış oyuncu", playerName, playerIp)
+                        await a3r.rconCommand(`kick ${playerId} launcher'i acmadan giremezsin`);
+                    }
                     var t1 = new Date(unixTime(time));
                     var t2 = new Date(unixTime(whitelisted[i].timestamp));
                     var saniye = (t1.getTime() - t2.getTime()) / 1000;
@@ -67,24 +80,20 @@ a3r.connect().then(async (success) => {
                             console.log("launcher kapatan oyuncu", playerName, playerIp)
                             await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
                         }
-                    } else {
-                        await a3r.rconCommand(`kick ${playerId} launcher'i ac`);
-                        console.log("launchersiz giriş", playerName, playerIp)
-                        continue
                     }
                 }
             }
         }
     }, 10000);
 
-    async function avla(ipadresi){
+    async function avla(ipadresi) {
         var players = await a3r.getPlayersArray()
 
         for (let k = 0; k < players.length; k++) {
             var playerIp = players[k][1]
             var playerId = players[k][0]
             var playerName = players[k][5]
-            if(ipadresi == playerIp){
+            if (ipadresi == playerIp) {
                 await a3r.rconCommand(`kick ${playerId} mimarlik fakultesi bir ust katta destek gel :D`);
                 console.log("launchersiz giriş", playerName, playerIp)
             }
