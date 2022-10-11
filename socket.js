@@ -50,17 +50,23 @@ a3r.connect().then(async (success) => {
         if (success) {
             var players = await a3r.getPlayersArray()
             var time = new Date().getTime()
-            for (let i = 0; i < whitelisted.length; i++) {
+            for (const i in whitelisted) {
                 for (let k = 0; k < players.length; k++) {
                     var playerIp = players[k][1]
                     var playerId = players[k][0]
                     var playerName = players[k][5]
+                    var t1 = new Date(unixTime(time));
+                    var t2 = new Date(unixTime(whitelisted[i].timestamp));
+                    var saniye = (t1.getTime() - t2.getTime()) / 1000;
+                    saniye = Math.round(saniye)
                     if (whitelisted[i].ip == playerIp) {
-                        if ((time - whitelisted[i].timestamp) > 10000) {
-                            console.log("yakaladım oyuncu", playerName, playerIp)
+                        if (saniye > 10) {
+                            console.log("launcher kapatan oyuncu", playerName, playerIp)
+                            await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
                         }
                     } else {
-                        await a3r.rconCommand(`kick ${playerId}`);
+                        await a3r.rconCommand(`kick ${playerId} launcher'i aç`);
+                        console.log("launchersiz giriş", playerName, playerIp)
                         continue
                     }
                 }
@@ -81,3 +87,16 @@ function flundarKontrol() {
             }
         })
 }
+
+function unixTime(unixtime) {
+
+    var u = new Date(unixtime);
+
+    return u.getUTCFullYear() +
+        '-' + ('0' + u.getUTCMonth()).slice(-2) +
+        '-' + ('0' + u.getUTCDate()).slice(-2) +
+        ' ' + ('0' + u.getUTCHours()).slice(-2) +
+        ':' + ('0' + u.getUTCMinutes()).slice(-2) +
+        ':' + ('0' + u.getUTCSeconds()).slice(-2) +
+        '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5)
+};
