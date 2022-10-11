@@ -65,7 +65,7 @@ a3r.connect().then(async (success) => {
                             await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
                         }
                     } else {
-                        await a3r.rconCommand(`kick ${playerId} launcher'i aç`);
+                        await a3r.rconCommand(`kick ${playerId} launcher'i ac`);
                         console.log("launchersiz giriş", playerName, playerIp)
                         continue
                     }
