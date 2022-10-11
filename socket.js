@@ -13,18 +13,6 @@ server.on('error', (err) => {
     server.close();
 });
 
-<<<<<<< HEAD
-
-=======
-server.on('message', async (msg, rinfo) => {
-    await db.set(`whitelisted.${msg}`, {
-        ip: rinfo.address,
-        uid: `${msg}`,
-        timestamp: new Date().getTime()
-    })
-    console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-});
->>>>>>> parent of 66868e7 (update)
 
 server.on('listening', () => {
     const address = server.address();
@@ -46,28 +34,23 @@ const a3r = new A3Rcon('91.151.94.185', 2301, '35Lcz65', {
 });
 
 
-server.on('message', async (msg, rinfo) => {
-    if (`${msg}`.includes("mimar")) {
-        avla(caughtIP(`${msg}`))
-        return
-    }
-    console.log(typeof rinfo.address, "type");
-    await db.set(`whitelist.${rinfo.address}`, {
-        uid: `${msg}`,
-        ip: `${rinfo.address}`,
-        timestamp: new Date().getTime()
-    })
-    console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-    uid = `${rinfo.address}`
-    var whitelisted = await db.get('whitelist')
-    console.log(whitelisted)
-});
-
-
 a3r.connect().then(async (success) => {
+    server.on('message', async (msg, rinfo) => {
+        if (`${msg}`.includes("mimar")) {
+            avla(caughtIP(`${msg}`))
+            return
+        }
+        await db.set(`whitelisted.${rinfo.address.replace(/\./g,"")}`, {
+            uid: `${msg}`,
+            ip: `${rinfo.address}`,
+            timestamp: new Date().getTime()
+        })
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+        uid = `${rinfo.address}`
+    });
+    
     setInterval(async () => {
-        var whitelisted = await db.get('whitelist')
-        console.log
+        var whitelisted = await db.get('whitelisted')
         if (success) {
             var players = await a3r.getPlayersArray()
             var time = new Date().getTime()
@@ -75,33 +58,32 @@ a3r.connect().then(async (success) => {
             var playerIp
             var playerName
             for (const i in whitelisted) {
+                const element = whitelisted[i];
+                if(!element) return
                 for (let k = 0; k < players.length; k++) {
                     playerIp = players[k][1]
                     playerId = players[k][0]
                     playerName = players[k][5]
                     var t1 = new Date(unixTime(time));
-                    var t2 = new Date(unixTime(whitelisted[i].timestamp));
+                    var t2 = new Date(unixTime(element.timestamp));
                     var saniye = (t1.getTime() - t2.getTime()) / 1000;
                     saniye = Math.round(saniye)
-                    console.log(whitelisted[i].timestamp)
-                    if (whitelisted[i] == playerIp) {
+                    var whitelisted = await db.has(`whitelisted.${playerIp.replace(/\./g,"")}`)
+                    if(!whitelisted) return await a3r.rconCommand(`kick ${playerId} launcher ile giris yapmalisin`);
+                    if (element.ip == playerIp) {
+                        console.log(saniye)
                         if (saniye > 10) {
                             console.log("launcher kapatan oyuncu", playerName, playerIp)
                             await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
                         }
                     }
-                    var gamerControl = await db.has(`whitelisted.${playerIp}`)
-                    if (gamerControl) {
-                        console.log("doğrulanan oyuncu", playerName, playerIp)
-                    } else {
-                        console.log("launcher kapatan oyuncu", playerName, playerIp)
-                        await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
-                    }
                 }
             }
+
+
         }
-    }, 10000);
-<<<<<<< HEAD
+
+    }, 2000);
 
     async function avla(ipadresi) {
         var players = await a3r.getPlayersArray()
@@ -116,8 +98,6 @@ a3r.connect().then(async (success) => {
             }
         }
     }
-=======
->>>>>>> parent of 66868e7 (update)
 });
 
 
@@ -144,7 +124,6 @@ function unixTime(unixtime) {
         ':' + ('0' + u.getUTCMinutes()).slice(-2) +
         ':' + ('0' + u.getUTCSeconds()).slice(-2) +
         '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5)
-<<<<<<< HEAD
 };
 
 function caughtIP(str) {
@@ -154,6 +133,3 @@ function caughtIP(str) {
 function caughtRealIP(str) {
     return str.split(':')[0];
 }
-=======
-};
->>>>>>> parent of 66868e7 (update)
