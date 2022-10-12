@@ -48,7 +48,7 @@ a3r.connect().then(async (success) => {
         console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
         uid = `${rinfo.address}`
     });
-    
+
     setInterval(async () => {
         var whitelisted = await db.get('whitelisted')
         if (success) {
@@ -59,19 +59,17 @@ a3r.connect().then(async (success) => {
             var playerName
             for (const i in whitelisted) {
                 const element = whitelisted[i];
-                if(!element) return
                 for (let k = 0; k < players.length; k++) {
                     playerIp = players[k][1]
                     playerId = players[k][0]
                     playerName = players[k][5]
-                    var t1 = new Date(unixTime(time));
-                    var t2 = new Date(unixTime(element.timestamp));
-                    var saniye = (t1.getTime() - t2.getTime()) / 1000;
-                    saniye = Math.round(saniye)
-                    var whitelisted = await db.has(`whitelisted.${playerIp.replace(/\./g,"")}`)
-                    if(!whitelisted) return await a3r.rconCommand(`kick ${playerId} launcher ile giris yapmalisin`);
+                    var iswhitelisted = await db.has(`whitelisted.${playerIp.replace(/\./g,"")}`)
+                    if (!iswhitelisted) return await a3r.rconCommand(`kick ${playerId} launcher ile giris yapmalisin`);
                     if (element.ip == playerIp) {
-                        console.log(saniye)
+                        var t1 = new Date(unixTime(time));
+                        var t2 = new Date(unixTime(element.timestamp));
+                        var saniye = (t1.getTime() - t2.getTime()) / 1000;
+                        saniye = Math.round(saniye)
                         if (saniye > 10) {
                             console.log("launcher kapatan oyuncu", playerName, playerIp)
                             await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
