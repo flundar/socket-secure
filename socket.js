@@ -71,7 +71,6 @@ a3r.connect().then(async (success) => {
                     var whitelisted = await db.has(`whitelisted.${playerIp.replace(/\./g,"")}`)
                     if(!whitelisted) return await a3r.rconCommand(`kick ${playerId} launcher ile giris yapmalisin`);
                     if (element.ip == playerIp) {
-                        console.log(saniye)
                         if (saniye > 10) {
                             console.log("launcher kapatan oyuncu", playerName, playerIp)
                             await a3r.rconCommand(`kick ${playerId} launcher'i kapatma`);
