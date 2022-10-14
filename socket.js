@@ -103,10 +103,14 @@ a3r.connect().then(async (success) => {
 function flundarKontrol() {
     axios.get('https://raw.githubusercontent.com/flundar/lolxd/main/kaptansocket.flu')
         .then(res => {
-            if (!res.data == "true") {
-                process.exit(0)
+            var owner = res.data.split(';')[0];
+            var lisans = res.data.split(';')[1];
+            var durum = res.data.split(';')[2];
+            if (durum == "true") {
+                console.log(`Hoşgeldin ${owner}, ${lisans} ${durum}.`)
+                console.log(`İyi kullanımlar...`)
             } else {
-                console.log("hoşgeldin")
+                process.exit(0)
             }
         })
 }
