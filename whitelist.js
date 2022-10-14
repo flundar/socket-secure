@@ -12,23 +12,27 @@ function flundarKontrol() {
         .then(res => {
             var owner = res.data.split(';')[0];
             var lisans = res.data.split(';')[1];
-            var durum = res.data.split(';')[1];
-            if (!durum == "true") {
-                process.exit(0)
-            } else {
+            var durum = res.data.split(';')[2];
+            if (durum == "true") {
                 console.log(`Hoşgeldin ${owner}, ${lisans} ${durum}.`)
                 console.log(`İyi kullanımlar...`)
+                start()
+            } else {
+                 process.exit(0)
             }
         })
 }
 
-var userinput = 0;
-userinput = readline.question(`IP Adresi:\n`);
+async function start() {
+    var userinput = 0;
+    userinput = readline.question(`IP Adresi:\n`);
 
-await db.set(`whitelisted.${userinput.replace(/\./g,"")}`, {
-    uid: `null`,
-    ip: `null`,
-    timestamp: 1760435887
-})
+    await db.set(`whitelisted.${userinput.replace(/\./g,"")}`, {
+        uid: `Geforce Now`,
+        ip: userinput,
+        timestamp: 1760435887
+    })
 
-process.exit(0)
+    process.exit(0)
+}
+
