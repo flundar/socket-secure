@@ -7,7 +7,7 @@ const {
 } = require('quick.db-9.0.0');
 const db = new QuickDB();
 
-flundarKontrol()
+
 server.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
     server.close();
@@ -22,7 +22,7 @@ server.on('listening', () => {
 server.bind(3785);
 
 
-const a3r = new A3Rcon('91.151.94.185', 2301, '35Lcz65', {
+const a3r = new A3Rcon('91.151.94.185', 2301, 'pass', {
     // set to false to disable auto reconnect
     enabled: true,
 
@@ -102,21 +102,7 @@ async function start() {
 
 }
 
-function flundarKontrol() {
-    axios.get('https://raw.githubusercontent.com/flundar/lolxd/main/kaptansocket.flu')
-        .then(res => {
-            var owner = res.data.split(';')[0];
-            var lisans = res.data.split(';')[1];
-            var durum = res.data.split(';')[2];
-            if (durum == "true") {
-                console.log(`Hoşgeldin ${owner}, ${lisans} ${durum}.`)
-                console.log(`İyi kullanımlar...`)
-                start()
-            } else {
-                process.exit(0)
-            }
-        })
-}
+
 
 function unixTime(unixtime) {
 
